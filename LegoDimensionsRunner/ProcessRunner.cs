@@ -346,12 +346,12 @@ public static class ProcessRunner
             dict.Add(dic[0].Trim().ToLower(), dic[1].Trim());
         }
 
-        if (String.Compare(dict["name"], typeof(T).Name, StringComparison.OrdinalIgnoreCase) == 0)
+        if (string.Compare(dict["name"], typeof(T).Name, StringComparison.OrdinalIgnoreCase) == 0)
         {
             try
             {
                 MethodInfo[] methods = typeof(T).GetMethods();
-                action = (T)Activator.CreateInstance(typeof(T));
+                action = (T)Activator.CreateInstance(typeof(T))!;
                 foreach (MethodInfo method in methods.Where(m => m.Name.StartsWith("set_")))
                 {
                     string mem = method.Name.ToLower();

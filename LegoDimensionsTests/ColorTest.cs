@@ -22,10 +22,10 @@ public class ColorTest
     public void ColorTestColorSerialization()
     {
         // Arrange
-        string col = "Red";
+        const string COL = "Red";
 
         // Act
-        Color? col2 = Color.FromColorName(col);
+        Color? col2 = Color.FromColorName(COL);
 
         // Assert
         Assert.NotNull(col2);
@@ -36,10 +36,10 @@ public class ColorTest
     public void ColorTestColorCaseSerialization()
     {
         // Arrange
-        string col = "rEd";
+        const string COL = "rEd";
 
         // Act
-        Color? col2 = Color.FromColorName(col);
+        Color? col2 = Color.FromColorName(COL);
 
         // Assert
         Assert.NotNull(col2);

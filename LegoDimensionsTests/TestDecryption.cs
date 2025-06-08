@@ -36,12 +36,11 @@ public class TestDecryption
     public void EncryptCharacter()
     {
         // Arrange
-        byte[] data;
         byte[] correctData = [0x5C, 0xF7, 0x1C, 0xDE, 0x29, 0xAD, 0xEA, 0x08];
         byte[] uid = [0x04, 0x47, 0x37, 0xE2, 0x48, 0x3F, 0x80];
 
         // Act
-        data = LegoTag.EncryptCharacterId(uid, 16);
+        byte[] data = LegoTag.EncryptCharacterId(uid, 16);
         ushort id = LegoTag.GetCharacterId(uid, data);
 
         // Assert
@@ -53,11 +52,9 @@ public class TestDecryption
     public void EncryptVehicle()
     {
         // Arrange
-        ushort id = 1123;
-        byte[] data;
+        const ushort ID = 1123;
 
-        // Act
-        data = LegoTag.EncryptVehicleId(id);
+        byte[] data = LegoTag.EncryptVehicleId(ID); // Act
 
         // Assert
         Assert.True(data.SequenceEqual(new byte[] { 0x63, 0x04, 0x00, 0x00 }));
