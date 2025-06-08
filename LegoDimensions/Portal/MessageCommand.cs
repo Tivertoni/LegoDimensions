@@ -8,7 +8,7 @@ namespace LegoDimensions.Portal;
 /// </summary>
 public enum MessageCommand
 {
-    /// <summary>No command, this is used when receiveing a message from the portal.</summary>
+    /// <summary>No command, this is used when receiving a message from the portal.</summary>
     None = 0x00,
 
     // B = general
@@ -22,10 +22,10 @@ public enum MessageCommand
     Challenge = 0xB3,
 
     /// <summary>Unknown command.</summary>
-    Unkonwn0Xb4 = 0xB4,
+    Unknown0Xb4 = 0xB4,
 
     // C = colors
-    /// <summary>Change color immediatly.</summary>
+    /// <summary>Change color immediately.</summary>
     Color = 0xC0,
 
     /// <summary>Get a color.</summary>
@@ -40,7 +40,7 @@ public enum MessageCommand
     /// <summary>Fade to a random color.</summary>
     FadeRandom = 0xC4,
 
-    /// <summary>Fade unkwon?</summary>
+    /// <summary>Fade unknown?</summary>
     FadeUnknown = 0xC5,
 
     /// <summary>Fade all.</summary>

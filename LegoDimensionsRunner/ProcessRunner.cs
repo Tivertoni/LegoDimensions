@@ -339,14 +339,14 @@ public static class ProcessRunner
             data = ((string)ser).Trim().Split(',');
         }
 
-        Dictionary<string, string> dico = new();
+        Dictionary<string, string> dict = new();
         foreach (string s in data)
         {
             string[] dic = s.Trim().Split('=');
-            dico.Add(dic[0].Trim().ToLower(), dic[1].Trim());
+            dict.Add(dic[0].Trim().ToLower(), dic[1].Trim());
         }
 
-        if (string.Compare(dico["name"], typeof(T).Name, true) == 0)
+        if (String.Compare(dict["name"], typeof(T).Name, StringComparison.OrdinalIgnoreCase) == 0)
         {
             try
             {
@@ -356,9 +356,9 @@ public static class ProcessRunner
                 {
                     string mem = method.Name.ToLower();
 
-                    if (dico.ContainsKey(mem.Substring(4)))
+                    if (dict.ContainsKey(mem.Substring(4)))
                     {
-                        string toParse = dico[mem.Substring(4)];
+                        string toParse = dict[mem.Substring(4)];
                         ParameterInfo[] parameters = method.GetParameters();
                         object param = null;
                         if (parameters[0].ParameterType == typeof(string))
@@ -427,7 +427,7 @@ public static class ProcessRunner
 
     private static Color GetColorFromString(string color)
     {
-        // Default will be black but that won't thriw
+        // Default will be black but that won't throw
         Color.TryGetColor(color, out Color result);
         return result;
     }

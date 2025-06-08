@@ -19,7 +19,7 @@ public class Character : ILegoTag
     public string Name { get; set; }
 
     /// <summary>
-    /// Gets or sets the world the character is from..
+    /// Gets or sets the world the character is from.
     /// </summary>
     public string World { get; set; }
 

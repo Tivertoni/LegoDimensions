@@ -14,7 +14,7 @@ public enum MessageType
     Normal = 0x55,
 
     /// <summary>
-    /// Event message. Rasied when a Tag is placed or removed.
+    /// Event message. Raised when a Tag is placed or removed.
     /// </summary>
     Event = 0x56
 }

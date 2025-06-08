@@ -31,20 +31,26 @@ public class EventTests
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation1 = new();
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation1 = new()
+        {
+            Name = "Test1",
+            Actions = []
+        };
 
-        animation1.Name = "Test1";
-        animation1.Actions = [];
         SetColor setColor1 = new() { Pad = Pad.Center, Color = $"#{Color.Yellow.GetHashCode():X2}" };
         string strSetColor1 = setColor1.ToString();
         animation1.Actions.Add(strSetColor1);
         runner.Animations.Add(animation1);
 
-        Animation animation2 = new();
-        animation2.Name = "Test2";
-        animation2.Actions = [];
+        Animation animation2 = new()
+        {
+            Name = "Test2",
+            Actions = []
+        };
         SetColor setColor2 = new() { Pad = Pad.Right, Color = $"#{Color.Red.GetHashCode():X2}" };
         string strSetColor2 = setColor2.ToString();
         animation2.Actions.Add(strSetColor2);
@@ -81,20 +87,26 @@ public class EventTests
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation1 = new();
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation1 = new()
+        {
+            Name = "Test1",
+            Actions = []
+        };
 
-        animation1.Name = "Test1";
-        animation1.Actions = [];
         SetColor setColor1 = new() { Pad = Pad.Center, Color = $"#{Color.Yellow.GetHashCode():X2}" };
         string strSetColor1 = setColor1.ToString();
         animation1.Actions.Add(strSetColor1);
         runner.Animations.Add(animation1);
 
-        Animation animation2 = new();
-        animation2.Name = "Test2";
-        animation2.Actions = [];
+        Animation animation2 = new()
+        {
+            Name = "Test2",
+            Actions = []
+        };
         SetColor setColor2 = new() { Pad = Pad.Right, Color = $"#{Color.Red.GetHashCode():X2}" };
         string strSetColor2 = setColor2.ToString();
         animation2.Actions.Add(strSetColor2);
@@ -129,20 +141,26 @@ public class EventTests
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation1 = new();
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation1 = new()
+        {
+            Name = "Test1",
+            Actions = []
+        };
 
-        animation1.Name = "Test1";
-        animation1.Actions = [];
         SetColor setColor1 = new() { Pad = Pad.Center, Color = $"#{Color.Yellow.GetHashCode():X2}" };
         string strSetColor1 = setColor1.ToString();
         animation1.Actions.Add(strSetColor1);
         runner.Animations.Add(animation1);
 
-        Animation animation2 = new();
-        animation2.Name = "Test2";
-        animation2.Actions = [];
+        Animation animation2 = new()
+        {
+            Name = "Test2",
+            Actions = []
+        };
         SetColor setColor2 = new() { Pad = Pad.Right, Color = $"#{Color.Red.GetHashCode():X2}" };
         string strSetColor2 = setColor2.ToString();
         animation2.Actions.Add(strSetColor2);
@@ -177,20 +195,26 @@ public class EventTests
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation1 = new();
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation1 = new()
+        {
+            Name = "Test1",
+            Actions = []
+        };
 
-        animation1.Name = "Test1";
-        animation1.Actions = [];
         SetColor setColor1 = new() { Pad = Pad.Center, Color = $"#{Color.Yellow.GetHashCode():X2}" };
         string strSetColor1 = setColor1.ToString();
         animation1.Actions.Add(strSetColor1);
         runner.Animations.Add(animation1);
 
-        Animation animation2 = new();
-        animation2.Name = "Test2";
-        animation2.Actions = [];
+        Animation animation2 = new()
+        {
+            Name = "Test2",
+            Actions = []
+        };
         SetColor setColor2 = new() { Pad = Pad.Right, Color = $"#{Color.Red.GetHashCode():X2}" };
         string strSetColor2 = setColor2.ToString();
         animation2.Actions.Add(strSetColor2);
@@ -225,20 +249,26 @@ public class EventTests
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation1 = new();
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation1 = new()
+        {
+            Name = "Test1",
+            Actions = []
+        };
 
-        animation1.Name = "Test1";
-        animation1.Actions = [];
         SetColor setColor1 = new() { Pad = Pad.Center, Color = $"#{Color.Yellow.GetHashCode():X2}" };
         string strSetColor1 = setColor1.ToString();
         animation1.Actions.Add(strSetColor1);
         runner.Animations.Add(animation1);
 
-        Animation animation2 = new();
-        animation2.Name = "Test2";
-        animation2.Actions = [];
+        Animation animation2 = new()
+        {
+            Name = "Test2",
+            Actions = []
+        };
         SetColor setColor2 = new() { Pad = Pad.Right, Color = $"#{Color.Red.GetHashCode():X2}" };
         string strSetColor2 = setColor2.ToString();
         animation2.Actions.Add(strSetColor2);
@@ -272,20 +302,26 @@ public class EventTests
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation1 = new();
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation1 = new()
+        {
+            Name = "Test1",
+            Actions = []
+        };
 
-        animation1.Name = "Test1";
-        animation1.Actions = [];
         SetColor setColor1 = new() { Pad = Pad.Center, Color = $"#{Color.Yellow.GetHashCode():X2}" };
         string strSetColor1 = setColor1.ToString();
         animation1.Actions.Add(strSetColor1);
         runner.Animations.Add(animation1);
 
-        Animation animation2 = new();
-        animation2.Name = "Test2";
-        animation2.Actions = [];
+        Animation animation2 = new()
+        {
+            Name = "Test2",
+            Actions = []
+        };
         SetColor setColor2 = new() { Pad = Pad.Right, Color = $"#{Color.Red.GetHashCode():X2}" };
         string strSetColor2 = setColor2.ToString();
         animation2.Actions.Add(strSetColor2);
@@ -317,20 +353,26 @@ public class EventTests
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation1 = new();
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation1 = new()
+        {
+            Name = "Test1",
+            Actions = []
+        };
 
-        animation1.Name = "Test1";
-        animation1.Actions = [];
         SetColor setColor1 = new() { Pad = Pad.Center, Color = $"#{Color.Yellow.GetHashCode():X2}" };
         string strSetColor1 = setColor1.ToString();
         animation1.Actions.Add(strSetColor1);
         runner.Animations.Add(animation1);
 
-        Animation animation2 = new();
-        animation2.Name = "Test2";
-        animation2.Actions = [];
+        Animation animation2 = new()
+        {
+            Name = "Test2",
+            Actions = []
+        };
         SetColor setColor2 = new() { Pad = Pad.Right, Color = $"#{Color.Red.GetHashCode():X2}" };
         string strSetColor2 = setColor2.ToString();
         animation2.Actions.Add(strSetColor2);
@@ -366,20 +408,26 @@ public class EventTests
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation1 = new();
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation1 = new()
+        {
+            Name = "Test1",
+            Actions = []
+        };
 
-        animation1.Name = "Test1";
-        animation1.Actions = [];
         SetColor setColor1 = new() { Pad = Pad.Center, Color = $"#{Color.Yellow.GetHashCode():X2}" };
         string strSetColor1 = setColor1.ToString();
         animation1.Actions.Add(strSetColor1);
         runner.Animations.Add(animation1);
 
-        Animation animation2 = new();
-        animation2.Name = "Test2";
-        animation2.Actions = [];
+        Animation animation2 = new()
+        {
+            Name = "Test2",
+            Actions = []
+        };
         SetColor setColor2 = new() { Pad = Pad.Right, Color = $"#{Color.Red.GetHashCode():X2}" };
         string strSetColor2 = setColor2.ToString();
         animation2.Actions.Add(strSetColor2);

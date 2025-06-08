@@ -12,7 +12,7 @@ bool alreadySetup = false;
 StartAgain:
 Application.Init();
 
-// Setup wizar
+// Setup wizard
 Wizard wizard = new("Setup Wizard");
 
 if (!alreadySetup)
@@ -75,7 +75,7 @@ Application.Shutdown();
 switch (actionChoice.SelectedItem)
 {
     case 0:
-        NfcPn532.ErraseTag();
+        NfcPn532.EraseTag();
         goto StartAgain;
 
     case 1:
@@ -88,12 +88,12 @@ switch (actionChoice.SelectedItem)
 
     case 3:
         Application.Init();
-        bool okpressed = false;
+        bool wasOkPressed = false;
         Button ok = new(3, 14, "Ok");
         Button cancel = new(10, 14, "Cancel");
 
         Dialog dialog = new("Lego tag ID", 60, 18, ok, cancel);
-        ok.Clicked += () => { Application.RequestStop(); okpressed = true; };
+        ok.Clicked += () => { Application.RequestStop(); wasOkPressed = true; };
         cancel.Clicked += () => Application.RequestStop();
 
         TextField entry = new()
@@ -104,7 +104,7 @@ switch (actionChoice.SelectedItem)
             Height = 1
         };
 
-        Label label = new("All characters and vehicules:")
+        Label label = new("All characters and vehicles:")
         {
             X = Pos.Left(entry),
             Y = Pos.Top(entry) + 1
@@ -119,15 +119,8 @@ switch (actionChoice.SelectedItem)
         };
 
         List<string> details = [];
-        foreach (Character car in Character.Characters)
-        {
-            details.Add($"{car.Id}: {car.Name}-{car.World}");
-        }
-
-        foreach (Vehicle vec in Vehicle.Vehicles)
-        {
-            details.Add($"{vec.Id}: {vec.Name}-{vec.World}");
-        }
+        details.AddRange(Character.Characters.Select(car => $"{car.Id}: {car.Name}-{car.World}"));
+        details.AddRange(Vehicle.Vehicles.Select(vec => $"{vec.Id}: {vec.Name}-{vec.World}"));
 
         list.SetSource(details);
         dialog.Add(entry);
@@ -137,7 +130,7 @@ switch (actionChoice.SelectedItem)
         Application.Top.Add(dialog);
         Application.Run();
         Application.Shutdown();
-        if (okpressed)
+        if (wasOkPressed)
         {
             ushort id = 0;
             if (entry.Text.IsEmpty)

@@ -4,7 +4,7 @@
 using LegoDimensions;
 using LegoDimensionsRunner;
 
-Console.WriteLine("Hello, Lego Dimensions Runnuer");
+Console.WriteLine("Hello, Lego Dimensions Runner");
 
 if (args.Length == 0)
 {
@@ -49,4 +49,4 @@ for (int i = 0; i < portals.Length; i++)
     legoPortals[i].Dispose();
 }
 
-Console.WriteLine("Thank you for playoing with us :-)");
+Console.WriteLine("Thank you for playing with us :-)");

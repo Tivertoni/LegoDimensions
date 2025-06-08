@@ -41,7 +41,7 @@ public class TestDecryption
         byte[] uid = [0x04, 0x47, 0x37, 0xE2, 0x48, 0x3F, 0x80];
 
         // Act
-        data = LegoTag.EncrypCharactertId(uid, 16);
+        data = LegoTag.EncryptCharacterId(uid, 16);
         ushort id = LegoTag.GetCharacterId(uid, data);
 
         // Assert

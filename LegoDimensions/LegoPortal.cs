@@ -475,7 +475,7 @@ public class LegoPortal : IDisposable, ILegoPortal
 
                                 if (GetTagDetails)
                                 {
-                                    // Ask for more wuth the read command for 0x24
+                                    // Ask for more with the read command for 0x24
                                     Message msgToSend = new(MessageCommand.Read);
                                     msgToSend.AddPayload(padIndex, (byte)0x24);
                                     legoTag.LastMessageId = SendMessage(msgToSend);
@@ -510,9 +510,9 @@ public class LegoPortal : IDisposable, ILegoPortal
                     }
                     else if (message.MessageType == MessageType.Normal)
                     {
-                        // In case the paylod is 17, then we do have a response to a read command
+                        // In case the payload is 17, then we do have a response to a read command
                         CommandId? cmdId = _commandId.FirstOrDefault(m => m.MessageId == _messageId);
-                        if (message.MessageCommand == MessageCommand.None && cmdId != null && cmdId.MessageCommand == MessageCommand.Read)
+                        if (message.MessageCommand == MessageCommand.None && cmdId is { MessageCommand: MessageCommand.Read })
                         {
                             // In this case the request is coming from the event
                             if (cmdId.ManualResetEvent == null)
@@ -542,7 +542,7 @@ public class LegoPortal : IDisposable, ILegoPortal
                             }
                             else
                             {
-                                // This case is a normal read and we will set the buffer
+                                // This case is a normal read, and we will set the buffer
                                 if (message.Payload[0] == 0)
                                 {
                                     // if no error, we set the result
@@ -600,7 +600,7 @@ public class LegoPortal : IDisposable, ILegoPortal
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Excption: {ex}");
+                Debug.WriteLine($"Exception: {ex}");
             }
         }
     }

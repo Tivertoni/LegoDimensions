@@ -43,7 +43,7 @@ public interface ILegoPortal
     Color GetColor(Pad pad);
 
     /// <summary>
-    /// Sets colors on all the pad at the same time immediatly.
+    /// Sets colors on all the pad at the same time immediately.
     /// </summary>
     /// <param name="padCenter">The center Pad's color.</param>
     /// <param name="padLeft">The left Pad's color.</param>
@@ -51,7 +51,7 @@ public interface ILegoPortal
     void SetColorAll(Color padCenter, Color padLeft, Color padRight);
 
     /// <summary>
-    /// Switches off colors on all the pad at the same time immediatly.
+    /// Switches off colors on all the pad at the same time immediately.
     /// </summary>
     void SwitchOffAll();
 
@@ -63,7 +63,7 @@ public interface ILegoPortal
     void Flash(Pad pad, FlashPad flashPad);
 
     /// <summary>
-    /// Flashes a color on a all pads.
+    /// Flashes a color on an all pads.
     /// </summary>
     /// <param name="flashPadCenter">The flash pad settings for center pad.</param>
     /// <param name="flashPadLeft">The flash pad settings for pad left.</param>
@@ -89,7 +89,7 @@ public interface ILegoPortal
     /// Fades a random color on a specific Pad.
     /// </summary>
     /// <param name="pad">The Pad(s) to fade.</param>
-    /// <param name="tickTime">The time to to fade. The higher, the longer.</param>
+    /// <param name="tickTime">The time to fade. The higher, the longer.</param>
     /// <param name="tickCount">>The tick count. Even will stop on old color, odd on the new one.</param>
     void FadeRandom(Pad pad, byte tickTime, byte tickCount);
 }

@@ -15,7 +15,7 @@ public class Flash : IAction
     public Pad Pad { get; set; }
 
     /// <summary>
-    /// Gets or sets the time to to stay on. The higher, the longer.
+    /// Gets or sets the time to stay on. The higher, the longer.
     /// </summary>
     public byte TickOn { get; set; }
 
@@ -32,7 +32,7 @@ public class Flash : IAction
     /// <summary>
     /// Gets or sets the string representation of the color.
     /// </summary>
-    public string Color { get; set; }
+    public string Color { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets of sets if the pad should be enabled.

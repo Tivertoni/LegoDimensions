@@ -8,7 +8,7 @@ namespace LegoDimensionsTests;
 public class TestMessages
 {
     [Fact]
-    public void TestMessageWitStringl()
+    public void TestMessageWithString()
     {
         // Arrange
         Message message = new(MessageCommand.Wake);

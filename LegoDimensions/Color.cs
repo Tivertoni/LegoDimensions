@@ -8,6 +8,7 @@ namespace LegoDimensions;
 /// <summary>
 /// Represents an ARGB (alpha, red, green, blue) color.
 /// </summary>
+
 public readonly struct Color
 {
     private readonly uint _color;
@@ -1252,10 +1253,10 @@ public readonly struct Color
     }
 
     /// <summary>
-    /// Convert String into an Color struct.
+    /// Convert String into a Color struct.
     /// </summary>
     /// <param name="hexString">Color String. Allowed formats are #AARRGGBB #RRGGBB #ARGB #RGB.</param>
-    /// <returns>Returns an Color struct otherwise throws an exception.</returns>
+    /// <returns>Returns a Color struct otherwise throws an exception.</returns>
     /// <exception>ArgumentException or FormatException.</exception>
     public static Color FromHex(string hexString)
     {
@@ -1309,7 +1310,7 @@ public readonly struct Color
     }
 
     /// <summary>
-    /// Convert String with a known color name into an Color struct.
+    /// Convert String with a known color name into a Color struct.
     /// </summary>
     /// <param name="color">The name of the color.</param>
     /// <returns>A color.</returns>

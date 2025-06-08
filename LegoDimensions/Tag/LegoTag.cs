@@ -103,7 +103,7 @@ public static class LegoTag
         data32[0] = BinaryPrimitives.ReadUInt32LittleEndian(data.AsSpan(0, 4));
         data32[1] = BinaryPrimitives.ReadUInt32LittleEndian(data.AsSpan(4, 4));
 
-        Generatekeys(uid, key);
+        GenerateKeys(uid, key);
         TeaDecrypt(data32, key);
         if (data32[0] != data32[1])
         {
@@ -118,12 +118,12 @@ public static class LegoTag
     /// Encrypt a character ID.
     /// </summary>
     /// <param name="uid"The 7 bytes RFID serial number.></param>
-    /// <param name="charid">The character ID.</param>
-    /// <returns>A 8 bytes encrypted data to be stored in the 0x24 and 0x25 NFC page.</returns>
+    /// <param name="charId">The character ID.</param>
+    /// <returns>8 bytes encrypted data to be stored in the 0x24 and 0x25 NFC page.</returns>
     /// <exception cref="ArgumentException">UID must be 7 bytes long.</exception>
-    public static byte[] EncrypCharactertId(byte[] uid, ushort charid)
+    public static byte[] EncryptCharacterId(byte[] uid, ushort charId)
     {
-        if (uid is null || uid.Length is not 7)
+        if (uid?.Length is not 7)
         {
             throw new ArgumentException("UID must be 7 bytes long.");
         }
@@ -132,9 +132,9 @@ public static class LegoTag
         uint[] buf = new uint[2];
         byte[] data = new byte[8];
 
-        Generatekeys(uid, key);
-        buf[0] = charid;
-        buf[1] = charid;
+        GenerateKeys(uid, key);
+        buf[0] = charId;
+        buf[1] = charId;
         TeaEncrypt(buf, key);
         for (int i = 0; i < 4; i++)
         {
@@ -190,16 +190,16 @@ public static class LegoTag
         return v2;
     }
 
-    private static void Generatekeys(byte[] uid, uint[] key)
+    private static void GenerateKeys(byte[] uid, uint[] key)
     {
         key[0] = Scramble(uid, 3);
         key[1] = Scramble(uid, 4);
         key[2] = Scramble(uid, 5);
-        key[3] = Scramble(uid, 6);
+        key[3] = Scramble(uid, 6); //TODO: This can be optimized
     }
 
     /// <summary>
-    /// Encrypt 64 bits with a 128 bit key using TEA.
+    /// Encrypt 64 bits with a 128-bit key using TEA.
     /// From http://en.wikipedia.org/wiki/Tiny_Encryption_Algorithm
     /// </summary>
     /// <param name="v">Array of two 32 bit uints to be encoded in place.</param>
@@ -235,9 +235,9 @@ public static class LegoTag
     }
 
     /// <summary>
-    /// Dencrypt 64 bits with a 128 bit key using TEA.
+    /// Decrypt 64 bits with a 128-bit key using TEA.
     /// </summary>
-    /// <param name="v">Array of two 32 bit uints to be dencoded in place.</param>
+    /// <param name="v">Array of two 32 bit uints to be decoded in place.</param>
     /// <param name="k">Array of four 32 bit uints to act as key.</param>
     private static void TeaDecrypt(uint[] v, uint[] k)
     {

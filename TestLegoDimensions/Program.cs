@@ -8,7 +8,7 @@ using LegoDimensions.Tag;
 List<LegoTagEventArgs> tags = [];
 
 LegoPortal portal = LegoPortal.GetFirstPortal();
-Console.WriteLine($"Portal found, serail number: {BitConverter.ToString(portal.SerialNumber)}");
+Console.WriteLine($"Portal found, serial number: {BitConverter.ToString(portal.SerialNumber)}");
 // If you don't want to get the tag details on the event, you can disable it
 //portal.GetTagDetails = false;
 portal.LegoTagEvent += PortalLegoTagEvent;
@@ -23,7 +23,7 @@ portal.LegoTagEvent += PortalLegoTagEvent;
 //TestFadeRandom0xC5();
 //TestReadTag();
 //TestPasswordAndRead();
-//TestExistingCommùands();
+//TestExistingCommands();
 //TestGetChallenge();
 //TestWrite();
 
@@ -119,13 +119,13 @@ void TestFadeAll0XC6()
 
 void TestFadeRandom0XC5()
 {
-    Console.WriteLine("Randome fading on left pad");
+    Console.WriteLine("Random fading on left pad");
     portal.FadeRandom(Pad.Left, 10, 10);
     Thread.Sleep(1000);
-    Console.WriteLine("Randome fading on center pad");
+    Console.WriteLine("Random fading on center pad");
     portal.FadeRandom(Pad.Center, 1, 100);
     Thread.Sleep(1000);
-    Console.WriteLine("Randome fading on right pad");
+    Console.WriteLine("Random fading on right pad");
     portal.FadeRandom(Pad.Right, 5, 15);
     Thread.Sleep(1000);
 }
@@ -190,7 +190,7 @@ void TestPasswordAndRead()
     TestReadTag();
 }
 
-void TestExistingCommùands()
+void TestExistingCommands()
 {
     for (int i = 0; i < 255; i++)
     {
@@ -218,7 +218,7 @@ void TestWrite()
     }
 
     LegoTagEventArgs tag = tags.First();
-    byte[] car = LegoTag.EncrypCharactertId(tag.CardUid, 61);
+    byte[] car = LegoTag.EncryptCharacterId(tag.CardUid, 61);
     bool ret = portal.WriteTag(tag.Index, 0x24, car.AsSpan().Slice(0, 4).ToArray());
     if (!ret)
     {

@@ -34,11 +34,15 @@ public class ProcessRunnerTest
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation = new();
-        animation.Name = "Test";
-        animation.Actions = [];
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation = new()
+        {
+            Name = "Test",
+            Actions = []
+        };
         SetColor setColor = new() { Pad = Pad.Center, Color = $"#{Color.Yellow.GetHashCode():X2}" };
         string strSetColor = setColor.ToString();
         SetColorAll setColorAll = new() { Center = Color.Yellow.ToString(), Left = $"#{Color.Red.GetHashCode():X2}", Right = "Tan", Duration = 200 };
@@ -84,11 +88,15 @@ public class ProcessRunnerTest
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation = new();
-        animation.Name = "Test";
-        animation.Actions = [];
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation = new()
+        {
+            Name = "Test",
+            Actions = []
+        };
         SetColor setColor = new() { Pad = Pad.Center, Color = $"#{Color.Yellow.GetHashCode():X2}" };
         string strSetColor = setColor.ToString();
         animation.Actions.Add(strSetColor);
@@ -116,12 +124,16 @@ public class ProcessRunnerTest
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation = new();
-        animation.Name = "Test";
-        animation.PortalId = 0;
-        animation.Actions = [];
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation = new()
+        {
+            Name = "Test",
+            PortalId = 0,
+            Actions = []
+        };
         SetColor setColor = new() { Pad = Pad.Center, Color = $"#{Color.Yellow.GetHashCode():X2}" };
         string strSetColor = setColor.ToString();
         animation.Actions.Add(strSetColor);
@@ -143,7 +155,7 @@ public class ProcessRunnerTest
     [Theory]
     [InlineData("{\"Configuration\":null,\"Animations\":[{\"Name\":\"Test\",\"Duration\":null,\"Actions\":[\"Name=SetColor,Pad=Center,Color=#FFFFFF00,Duration=\",\"Name=SetColorAll,Center=#FFFFFF00,Left=#FFFF0000,Right=#FFD2B48C,Duration=1\"],\"CompiledActions\":null}],\"Event\":null}")]
     [InlineData("{\"Animations\":[{\"Name\":\"Test\",\"Actions\":[\"Name=SetColor,Pad=1,Color=#FFFFFF00\",\"Name=SetColorAll,Center=yellow,Left=#FFFF0000,Right=#FFD2B48C,Duration=200\"]}]}")]
-    [InlineData("{\"anImaTions\":[{\"Name\":\"Test\",\"Actions\":[\"Name=SetColor,   PAD =     1, color = #FFFFFF00    \",\"Name=SetColorAll,Center=yellow,Left=#FFFF0000,Right=#FFD2B48C,Duration=200\"]}]}")]
+    [InlineData("{\"Animations\":[{\"Name\":\"Test\",\"Actions\":[\"Name=SetColor,   PAD =     1, color = #FFFFFF00    \",\"Name=SetColorAll,Center=yellow,Left=#FFFF0000,Right=#FFD2B48C,Duration=200\"]}]}")]
     [InlineData("{\"Configuration\":null,\"Animations\":[{\"Name\":\"Test\",\"Duration\":null,\"Actions\":[{\"Duration\":null,\"Name\":\"SetColor\",\"Pad\":1,\"Color\":\"#FFFFFF00\"},{\"Name\":\"SetColorAll\",\"Duration\":1,\"Center\":\"#FFFFFF00\",\"Left\":\"#FFFF0000\",\"Right\":\"#FFD2B48C\"}],\"CompiledActions\":null}],\"Event\":null}")]
     [InlineData("{\"Animations\":[{\"Name\":\"Test\",\"Actions\":[{\"Name\":\"setcolor\",\"PAD\":1,\"coLor\":\"yellow\"},{\"Name\":\"SetColorAll\",\"Duration\":200,\"Center\":\"#FFFFFF00\",\"Left\":\"#FFFF0000\",\"Right\":\"#FFD2B48C\"}],\"CompiledActions\":null}],\"Event\":null}")]
     public void SetColorFromJson(string json)
@@ -178,11 +190,15 @@ public class ProcessRunnerTest
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation = new();
-        animation.Name = "Test";
-        animation.Actions = [];
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation = new()
+        {
+            Name = "Test",
+            Actions = []
+        };
         SetColorAll setColor = new() { Center = Color.Yellow.ToString(), Left = $"#{Color.Red.GetHashCode():X2}", Right = "Tan", Duration = 2000 };
         string strSetColor = setColor.ToString();
         animation.Actions.Add(strSetColor);
@@ -216,11 +232,15 @@ public class ProcessRunnerTest
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation = new();
-        animation.Name = "Test";
-        animation.Actions = [];
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation = new()
+        {
+            Name = "Test",
+            Actions = []
+        };
         Fade fade = new() { Color = "yeLLOw", Pad = Pad.Right, TickCount = 42, TickTime = 20, Duration = 100 };
         string strFade = fade.ToString();
         animation.Actions.Add(strFade);
@@ -248,11 +268,15 @@ public class ProcessRunnerTest
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation = new();
-        animation.Name = "Test";
-        animation.Actions = [];
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation = new()
+        {
+            Name = "Test",
+            Actions = []
+        };
         FadeAll fade = new() { CenterColor = "yeLLOw", CenterTickCount = 42, CenterTickTime = 20, LeftColor = "RED", LeftTickCount = 24, LeftTickTime = 2, LeftEnabled = false, Duration = 100 };
         string strFade = fade.ToString();
         animation.Actions.Add(strFade);
@@ -280,11 +304,15 @@ public class ProcessRunnerTest
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation = new();
-        animation.Name = "Test";
-        animation.Actions = [];
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation = new()
+        {
+            Name = "Test",
+            Actions = []
+        };
         FadeRandom fade = new() { Pad = Pad.Right, TickCount = 42, TickTime = 20, Duration = 100 };
         string strFade = fade.ToString();
         animation.Actions.Add(strFade);
@@ -312,11 +340,15 @@ public class ProcessRunnerTest
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation = new();
-        animation.Name = "Test";
-        animation.Actions = [];
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation = new()
+        {
+            Name = "Test",
+            Actions = []
+        };
         Flash flash = new() { Color = "yeLLOw", Pad = Pad.Right, TickCount = 42, TickOn = 20, TickOff = 12, Duration = 100 };
         string strFlash = flash.ToString();
         animation.Actions.Add(strFlash);
@@ -344,12 +376,16 @@ public class ProcessRunnerTest
             Portal.ResetEvent.Token.WaitHandle.WaitOne(5000, true);
         }
 
-        Runner runner = new();
-        runner.Animations = [];
-        Animation animation = new();
-        animation.Name = "Test";
-        animation.Actions = [];
-        FlashAll flash = new() { CenterColor = "yeLLOw", CenterTickCount = 42, CenterTickOn = 20, CenterTickOff = 12, LeftColor = "dlack", LeftTickCount = 123, RightColor = "#12345678" };
+        Runner runner = new()
+        {
+            Animations = []
+        };
+        Animation animation = new()
+        {
+            Name = "Test",
+            Actions = []
+        };
+        FlashAll flash = new() { CenterColor = "yeLLOw", CenterTickCount = 42, CenterTickOn = 20, CenterTickOff = 12, LeftColor = "black", LeftTickCount = 123, RightColor = "#12345678" };
         string strFlash = flash.ToString();
         animation.Actions.Add(strFlash);
         runner.Animations.Add(animation);

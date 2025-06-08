@@ -17,7 +17,7 @@ public class FlashPad
     /// <summary>
     /// Creates a Flash Pad class.
     /// </summary>
-    /// <param name="tickOn">The time to to stay on. The higher, the longer.</param>
+    /// <param name="tickOn">The time to stay on. The higher, the longer.</param>
     /// <param name="tickOff">The time to stay off. The higher, the longer.</param>
     /// <param name="tickCount">The number of pulses, 0xFF is forever.</param>
     /// <param name="color">The color.</param>
@@ -34,7 +34,7 @@ public class FlashPad
     /// <summary>
     /// True if it will flash forever.
     /// </summary>
-    public bool FlashForever => TickCount == 0xFF;
+    public bool FlashForever => TickCount == 0xFF; //TODO: Maybe merge these two together? get => TickCount == 0xFF; set => TickCount = 0xFF
 
     /// <summary>
     /// Sets flashing forever.
@@ -42,7 +42,7 @@ public class FlashPad
     public void SetForever() => TickCount = 0xFF;
 
     /// <summary>
-    /// Gets or sets the time to to stay on. The higher, the longer.
+    /// Gets or sets the time to stay on. The higher, the longer.
     /// </summary>
     public byte TickOn { get; set; }
 

@@ -60,7 +60,7 @@ public class Vehicle : ILegoTag
     }
 
     /// <summary>
-    /// The list of all knowns vehicles.
+    /// The list of all known vehicles.
     /// </summary>
     public static readonly List<Vehicle> Vehicles =
     [

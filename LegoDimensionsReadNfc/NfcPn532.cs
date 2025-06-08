@@ -22,7 +22,7 @@ public class NfcPn532
         _pn532 = new Pn532(_device);
     }
 
-    public static void ErraseTag()
+    public static void EraseTag()
     {
         bool reselected = false;
         bool stopped = false;
@@ -197,7 +197,7 @@ public class NfcPn532
         if (character)
         {
             // Get the encrypted character ID
-            byte[] car = LegoTag.EncrypCharactertId(_ultralight.SerialNumber, id);
+            byte[] car = LegoTag.EncryptCharacterId(_ultralight.SerialNumber, id);
 
             if (!WriteAndCheck(0x24, car.AsSpan(0, 4).ToArray()))
             {
@@ -275,7 +275,7 @@ public class NfcPn532
             _ultralight.Command = UltralightCommand.PasswordAuthentication;
             int auth = _ultralight.RunUltralightCommand();
 
-            // For debug pu^rposes, you can display all page card
+            // For debug purposes, you can display all page card
             if (dump)
             {
                 ReadAllCard();
@@ -537,8 +537,10 @@ public class NfcPn532
 
             _currentCardUid = decrypted.NfcId;
 
-            _ultralight = new UltralightCard(_pn532, 0);
-            _ultralight.SerialNumber = decrypted.NfcId;
+            _ultralight = new UltralightCard(_pn532, 0)
+            {
+                SerialNumber = decrypted.NfcId
+            };
             return _ultralight;
         }
 

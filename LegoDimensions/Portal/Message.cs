@@ -51,7 +51,7 @@ public class Message
     /// Creates a Message.
     /// </summary>
     /// <param name="msgCommand">The message command.</param>
-    /// <param name="messageType">The message type. By default a normal message.</param>
+    /// <param name="messageType">The message type. By default, a normal message.</param>
     public Message(MessageCommand msgCommand, MessageType messageType = MessageType.Normal)
     {
         MessageCommand = msgCommand;
@@ -67,7 +67,7 @@ public class Message
     /// <exception cref="ArgumentException">Not correct length, invalid type, invalid payload size.</exception>
     public static Message CreateFromBuffer(byte[] readBuffer, MessageSource messageSource)
     {
-        // Check if lenght is 32
+        // Check if length is 32
         if (readBuffer.Length != 32)
         {
             throw new ArgumentException("Message buffer is not 32 bytes.");
@@ -77,7 +77,7 @@ public class Message
         // message type
         if (messageType != MessageType.Normal && messageType != MessageType.Event)
         {
-            throw new ArgumentException("Invalid message tyep.");
+            throw new ArgumentException("Invalid message type.");
         }
 
         int length = readBuffer[1];
