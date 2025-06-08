@@ -178,7 +178,7 @@ public static class LegoTag
         uint v2 = 0;
 
         // Copy the UID into the first 7 bytes of the basic array
-        Array.Copy(uid, basic, uid.Length);
+        Array.Copy(uid, basic, 7);
 
         basic[cnt * 4 - 1] = 0xaa;
         for (int i = 0; i < cnt; i++)
@@ -189,13 +189,12 @@ public static class LegoTag
 
         return v2;
     }
-
     private static void GenerateKeys(byte[] uid, uint[] key)
     {
         key[0] = Scramble(uid, 3);
         key[1] = Scramble(uid, 4);
         key[2] = Scramble(uid, 5);
-        key[3] = Scramble(uid, 6); //TODO: This can be optimized
+        key[3] = Scramble(uid, 6);
     }
 
     /// <summary>
