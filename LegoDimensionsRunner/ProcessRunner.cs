@@ -5,429 +5,430 @@ using LegoDimensions;
 using LegoDimensions.Portal;
 using LegoDimensionsRunner.Actions;
 using System.Diagnostics;
+using System.Reflection;
 using System.Text.Json;
+using LibUsbDotNet.LibUsb;
 
-namespace LegoDimensionsRunner
+namespace LegoDimensionsRunner;
+
+public static class ProcessRunner
 {
-    public static class ProcessRunner
+    private static ILegoPortal[]? _portals;
+    private static Runner? _runner;
+
+    public static void CreateAllPortals()
     {
-        private static ILegoPortal[] _portals = null;
-        private static Runner _runner;
-
-        public static void CreateAllPortals()
+        IUsbDevice[] portals = LegoPortal.GetPortals();
+        _portals = new ILegoPortal[portals.Length];
+        for (int i = 0; i < portals.Length; i++)
         {
-            var portals = LegoPortal.GetPortals();
-            _portals = new ILegoPortal[portals.Length];
-            for (int i = 0; i < portals.Length; i++)
-            {
-                _portals[i] = new LegoPortal(portals[i], i);
-            }
+            _portals[i] = new LegoPortal(portals[i], i);
         }
+    }
 
-        public static void SetSinglePortal(ILegoPortal portal) => _portals = new ILegoPortal[] { portal };
+    public static void SetSinglePortal(ILegoPortal portal) => _portals = [portal];
 
-        public static ILegoPortal[] GetLegoPortals() => _portals;
+    public static ILegoPortal[]? GetLegoPortals() => _portals;
 
-        public static void Build(Runner runner)
+    public static void Build(Runner runner)
+    {
+        foreach (Animation anim in runner.Animations)
         {
-            foreach (var anim in runner.Animations)
+            int? portalId = anim.PortalId;
+            // Sanity check
+            if (portalId != null && (portalId.Value < 0 || portalId.Value >= _portals.Length))
             {
-                var portalId = anim.PortalId;
-                // Sanity check
-                if ((portalId != null) && (portalId.Value < 0 || portalId.Value >= _portals.Length))
+                continue;
+            }
+
+            anim.CompiledActions = [];
+            foreach (dynamic action in anim.Actions)
+            {
+                if (TryGetObject<SetColor>(action, out SetColor setColor))
                 {
-                    continue;
+                    anim.CompiledActions.Add(() =>
+                    {
+                        if (portalId == null)
+                        {
+                            for (int i = 0; i < _portals.Length; i++)
+                            {
+                                _portals[i].SetColor(setColor.Pad, GetColorFromString(setColor.Color));
+                            }
+                        }
+                        else
+                        {
+                            _portals[portalId.Value].SetColor(setColor.Pad, GetColorFromString(setColor.Color));
+                        }
+
+                        Thread.Sleep(setColor.Duration ?? 0);
+                    });
                 }
-
-                anim.CompiledActions = new List<Action>();
-                foreach (var action in anim.Actions)
+                else if (TryGetObject<SetColorAll>(action, out SetColorAll setColorAll))
                 {
-                    if (TryGetObject<SetColor>(action, out SetColor setColor))
+                    anim.CompiledActions.Add(() =>
                     {
-                        anim.CompiledActions.Add(() =>
+                        if (portalId == null)
                         {
-                            if (portalId == null)
+                            for (int i = 0; i < _portals.Length; i++)
                             {
-                                for (int i = 0; i < _portals.Length; i++)
-                                {
-                                    _portals[i].SetColor(setColor.Pad, GetColorFromString(setColor.Color));
-                                }
+                                _portals[i].SetColorAll(GetColorFromString(setColorAll.Center), GetColorFromString(setColorAll.Left), GetColorFromString(setColorAll.Right));
                             }
-                            else
-                            {
-                                _portals[portalId.Value].SetColor(setColor.Pad, GetColorFromString(setColor.Color));
-                            }
+                        }
+                        else
+                        {
+                            _portals[portalId.Value].SetColorAll(GetColorFromString(setColorAll.Center), GetColorFromString(setColorAll.Left), GetColorFromString(setColorAll.Right));
+                        }
 
-                            Thread.Sleep(setColor.Duration ?? 0);
-                        });
-                    }
-                    else if (TryGetObject<SetColorAll>(action, out SetColorAll setColorAll))
+                        Thread.Sleep(setColorAll.Duration ?? 0);
+                    });
+                }
+                else if (TryGetObject<Flash>(action, out Flash flash))
+                {
+                    anim.CompiledActions.Add(() =>
                     {
-                        anim.CompiledActions.Add(() =>
+                        if (portalId == null)
                         {
-                            if (portalId == null)
+                            for (int i = 0; i < _portals.Length; i++)
                             {
-                                for (int i = 0; i < _portals.Length; i++)
-                                {
-                                    _portals[i].SetColorAll(GetColorFromString(setColorAll.Center), GetColorFromString(setColorAll.Left), GetColorFromString(setColorAll.Right));
-                                }
+                                _portals[i].Flash(flash.Pad, new FlashPad(flash.TickOn, flash.TickOff, flash.TickCount, GetColorFromString(flash.Color), flash.Enabled));
                             }
-                            else
-                            {
-                                _portals[portalId.Value].SetColorAll(GetColorFromString(setColorAll.Center), GetColorFromString(setColorAll.Left), GetColorFromString(setColorAll.Right));
-                            }
+                        }
+                        else
+                        {
+                            _portals[portalId.Value].Flash(flash.Pad, new FlashPad(flash.TickOn, flash.TickOff, flash.TickCount, GetColorFromString(flash.Color), flash.Enabled));
+                        }
 
-                            Thread.Sleep(setColorAll.Duration ?? 0);
-                        });
-                    }
-                    else if (TryGetObject<Flash>(action, out Flash flash))
+                        Thread.Sleep(flash?.Duration ?? 0);
+                    });
+                }
+                else if (TryGetObject<SwitchOffAll>(action, out SwitchOffAll switchOffAll))
+                {
+                    anim.CompiledActions.Add(() =>
                     {
-                        anim.CompiledActions.Add(() =>
+                        if (portalId == null)
                         {
-                            if (portalId == null)
+                            foreach (ILegoPortal portal in _portals)
                             {
-                                for (int i = 0; i < _portals.Length; i++)
-                                {
-                                    _portals[i].Flash(flash.Pad, new FlashPad(flash.TickOn, flash.TickOff, flash.TickCount, GetColorFromString(flash.Color), flash.Enabled));
-                                }
+                                portal.SwitchOffAll();
                             }
-                            else
-                            {
-                                _portals[portalId.Value].Flash(flash.Pad, new FlashPad(flash.TickOn, flash.TickOff, flash.TickCount, GetColorFromString(flash.Color), flash.Enabled));
-                            }
+                        }
+                        else
+                        {
+                            _portals[portalId.Value].SwitchOffAll();
+                        }
 
-                            Thread.Sleep(flash?.Duration ?? 0);
-                        });
-                    }
-                    else if (TryGetObject<SwitchOffAll>(action, out SwitchOffAll switchOffAll))
+                        Thread.Sleep(switchOffAll?.Duration ?? 0);
+                    });
+                }
+                else if (TryGetObject<FlashAll>(action, out FlashAll flashAll))
+                {
+                    anim.CompiledActions.Add(() =>
                     {
-                        anim.CompiledActions.Add(() =>
+                        if (portalId == null)
                         {
-                            if (portalId == null)
+                            foreach (ILegoPortal portal in _portals)
                             {
-                                for (int i = 0; i < _portals.Length; i++)
-                                {
-                                    _portals[i].SwitchOffAll();
-                                }
+                                portal.FlashAll(new FlashPad(flashAll.CenterTickOn, flashAll.CenterTickOn, flashAll.CenterTickOn, GetColorFromString(flashAll.CenterColor), flashAll.CenterEnabled),
+                                    new FlashPad(flashAll.LeftTickOn, flashAll.LeftTickOff, flashAll.LeftTickCount, GetColorFromString(flashAll.LeftColor), flashAll.LeftEnabled),
+                                    new FlashPad(flashAll.RightTickOn, flashAll.RightTickOff, flashAll.RightTickCount, GetColorFromString(flashAll.RightColor), flashAll.RightEnabled));
                             }
-                            else
+                        }
+                        else
+                        {
+                            _portals[portalId.Value].FlashAll(new FlashPad(flashAll.CenterTickOn, flashAll.CenterTickOn, flashAll.CenterTickOn, GetColorFromString(flashAll.CenterColor), flashAll.CenterEnabled),
+                                new FlashPad(flashAll.LeftTickOn, flashAll.LeftTickOff, flashAll.LeftTickCount, GetColorFromString(flashAll.LeftColor), flashAll.LeftEnabled),
+                                new FlashPad(flashAll.RightTickOn, flashAll.RightTickOff, flashAll.RightTickCount, GetColorFromString(flashAll.RightColor), flashAll.RightEnabled));
+                        }
+                        Thread.Sleep(flashAll?.Duration ?? 0);
+                    });
+                }
+                else if (TryGetObject<Fade>(action, out Fade fade))
+                {
+                    anim.CompiledActions.Add(() =>
+                    {
+                        if (portalId == null)
+                        {
+                            foreach (ILegoPortal portal in _portals)
                             {
-                                _portals[portalId.Value].SwitchOffAll();
+                                portal.Fade(fade.Pad, new FadePad(fade.TickTime, fade.TickCount, GetColorFromString(fade.Color), fade.Enabled));
                             }
+                        }
+                        else
+                        {
+                            _portals[portalId.Value].Fade(fade.Pad, new FadePad(fade.TickTime, fade.TickCount, GetColorFromString(fade.Color), fade.Enabled));
+                        }
 
-                            Thread.Sleep(switchOffAll?.Duration ?? 0);
-                        });
-                    }
-                    else if (TryGetObject<FlashAll>(action, out FlashAll flashAll))
+                        Thread.Sleep(fade?.Duration ?? 0);
+                    });
+                }
+                else if (TryGetObject<FadeAll>(action, out FadeAll fadeAll))
+                {
+                    anim.CompiledActions.Add(() =>
                     {
-                        anim.CompiledActions.Add(() =>
+                        if (portalId == null)
                         {
-                            if (portalId == null)
+                            for (int i = 0; i < _portals.Length; i++)
                             {
-                                for (int i = 0; i < _portals.Length; i++)
-                                {
-                                    _portals[i].FlashAll(new FlashPad(flashAll.CenterTickOn, flashAll.CenterTickOn, flashAll.CenterTickOn, GetColorFromString(flashAll.CenterColor), flashAll.CenterEnabled),
-                                        new FlashPad(flashAll.LeftTickOn, flashAll.LeftTickOff, flashAll.LeftTickCount, GetColorFromString(flashAll.LeftColor), flashAll.LeftEnabled),
-                                        new FlashPad(flashAll.RightTickOn, flashAll.RightTickOff, flashAll.RightTickCount, GetColorFromString(flashAll.RightColor), flashAll.RightEnabled));
-                                }
-                            }
-                            else
-                            {
-                                _portals[portalId.Value].FlashAll(new FlashPad(flashAll.CenterTickOn, flashAll.CenterTickOn, flashAll.CenterTickOn, GetColorFromString(flashAll.CenterColor), flashAll.CenterEnabled),
-                                        new FlashPad(flashAll.LeftTickOn, flashAll.LeftTickOff, flashAll.LeftTickCount, GetColorFromString(flashAll.LeftColor), flashAll.LeftEnabled),
-                                        new FlashPad(flashAll.RightTickOn, flashAll.RightTickOff, flashAll.RightTickCount, GetColorFromString(flashAll.RightColor), flashAll.RightEnabled));
-                            }
-                            Thread.Sleep(flashAll?.Duration ?? 0);
-                        });
-                    }
-                    else if (TryGetObject<Fade>(action, out Fade fade))
-                    {
-                        anim.CompiledActions.Add(() =>
-                        {
-                            if (portalId == null)
-                            {
-                                for (int i = 0; i < _portals.Length; i++)
-                                {
-                                    _portals[i].Fade(fade.Pad, new FadePad(fade.TickTime, fade.TickCount, GetColorFromString(fade.Color), fade.Enabled));
-                                }
-                            }
-                            else
-                            {
-                                _portals[portalId.Value].Fade(fade.Pad, new FadePad(fade.TickTime, fade.TickCount, GetColorFromString(fade.Color), fade.Enabled));
-                            }
-
-                            Thread.Sleep(fade?.Duration ?? 0);
-                        });
-                    }
-                    else if (TryGetObject<FadeAll>(action, out FadeAll fadeAll))
-                    {
-                        anim.CompiledActions.Add(() =>
-                        {
-                            if (portalId == null)
-                            {
-                                for (int i = 0; i < _portals.Length; i++)
-                                {
-                                    _portals[i].FadeAll(new FadePad(fadeAll.CenterTickTime, fadeAll.CenterTickCount, GetColorFromString(fadeAll.CenterColor), fadeAll.CenterEnabled),
-                                        new FadePad(fadeAll.LeftTickTime, fadeAll.LeftTickCount, GetColorFromString(fadeAll.LeftColor), fadeAll.LeftEnabled),
-                                        new FadePad(fadeAll.RightTickTime, fadeAll.RightTickCount, GetColorFromString(fadeAll.RightColor), fadeAll.RightEnabled));
-                                }
-                            }
-                            else
-                            {
-                                _portals[portalId.Value].FadeAll(new FadePad(fadeAll.CenterTickTime, fadeAll.CenterTickCount, GetColorFromString(fadeAll.CenterColor), fadeAll.CenterEnabled),
+                                _portals[i].FadeAll(new FadePad(fadeAll.CenterTickTime, fadeAll.CenterTickCount, GetColorFromString(fadeAll.CenterColor), fadeAll.CenterEnabled),
                                     new FadePad(fadeAll.LeftTickTime, fadeAll.LeftTickCount, GetColorFromString(fadeAll.LeftColor), fadeAll.LeftEnabled),
                                     new FadePad(fadeAll.RightTickTime, fadeAll.RightTickCount, GetColorFromString(fadeAll.RightColor), fadeAll.RightEnabled));
                             }
-
-                            Thread.Sleep(fadeAll?.Duration ?? 0);
-                        });
-                    }
-                    else if (TryGetObject<FadeRandom>(action, out FadeRandom fadeRandom))
-                    {
-                        anim.CompiledActions.Add(() =>
+                        }
+                        else
                         {
-                            if (portalId == null)
-                            {
-                                for (int i = 0; i < _portals.Length; i++)
-                                {
-                                    _portals[i].FadeRandom(fadeRandom.Pad, fadeRandom.TickTime, fadeRandom.TickCount);
-                                }
-                            }
-                            else
-                            {
-                                _portals[portalId.Value].FadeRandom(fadeRandom.Pad, fadeRandom.TickTime, fadeRandom.TickCount);
-                            }
+                            _portals[portalId.Value].FadeAll(new FadePad(fadeAll.CenterTickTime, fadeAll.CenterTickCount, GetColorFromString(fadeAll.CenterColor), fadeAll.CenterEnabled),
+                                new FadePad(fadeAll.LeftTickTime, fadeAll.LeftTickCount, GetColorFromString(fadeAll.LeftColor), fadeAll.LeftEnabled),
+                                new FadePad(fadeAll.RightTickTime, fadeAll.RightTickCount, GetColorFromString(fadeAll.RightColor), fadeAll.RightEnabled));
+                        }
 
-                            Thread.Sleep(fadeRandom?.Duration ?? 0);
-                        });
-                    }
+                        Thread.Sleep(fadeAll?.Duration ?? 0);
+                    });
                 }
-            }
+                else if (TryGetObject<FadeRandom>(action, out FadeRandom fadeRandom))
+                {
+                    anim.CompiledActions.Add(() =>
+                    {
+                        if (portalId == null)
+                        {
+                            for (int i = 0; i < _portals.Length; i++)
+                            {
+                                _portals[i].FadeRandom(fadeRandom.Pad, fadeRandom.TickTime, fadeRandom.TickCount);
+                            }
+                        }
+                        else
+                        {
+                            _portals[portalId.Value].FadeRandom(fadeRandom.Pad, fadeRandom.TickTime, fadeRandom.TickCount);
+                        }
 
-            _runner = runner;
-            for (int i = 0; i < _portals.Length; i++)
-            {
-                _portals[i].LegoTagEvent += PortalLegoTagEvent;
+                        Thread.Sleep(fadeRandom?.Duration ?? 0);
+                    });
+                }
             }
         }
 
-        private static void PortalLegoTagEvent(object? sender, LegoTagEventArgs e)
+        _runner = runner;
+        for (int i = 0; i < _portals.Length; i++)
         {
-            // First check by ID
-            var id = _runner?.Events?.Where(m => (m.Id != null) && (m.Id == e.LegoTag?.Id)).Where(m => m.Pad == Pad.All || m.Pad == e.Pad);
-            if (id != null && id.Any())
+            _portals[i].LegoTagEvent += PortalLegoTagEvent;
+        }
+    }
+
+    private static void PortalLegoTagEvent(object? sender, LegoTagEventArgs e)
+    {
+        // First check by ID
+        IEnumerable<Event>? id = _runner?.Events?.Where(m => m.Id != null && m.Id == e.LegoTag?.Id).Where(m => m.Pad == Pad.All || m.Pad == e.Pad);
+        if (id != null && id.Any())
+        {
+            RunEvent(id);
+        }
+        else
+        {
+            IEnumerable<Event>? cardId = _runner?.Events?.Where(m => m.CardId != null && m.CardId == BitConverter.ToString(e.CardUid)).Where(m => m.Pad == Pad.All || m.Pad == e.Pad);
+            if (cardId != null && cardId.Any())
             {
-                RunEvent(id);
+                RunEvent(cardId);
             }
             else
             {
-                var cardid = _runner?.Events?.Where(m => (m.CardId != null) && (m.CardId == BitConverter.ToString(e.CardUid))).Where(m => m.Pad == Pad.All || m.Pad == e.Pad);
-                if (cardid != null && cardid.Any())
+                // Check if we have a specific pad 
+                IEnumerable<Event>? pads = _runner?.Events?.Where(m => (m.Pad == Pad.All || m.Pad == e.Pad) && m.Id == null && string.IsNullOrEmpty(m.CardId));
+                if (pads != null && pads.Any())
                 {
-                    RunEvent(cardid);
-                }
-                else
-                {
-                    // Check if we have a specific pad 
-                    var pads = _runner?.Events?.Where(m => (m.Pad == Pad.All || m.Pad == e.Pad) && (m.Id == null && string.IsNullOrEmpty(m.CardId)));
-                    if (pads != null && pads.Any())
-                    {
-                        RunEvent(pads);
-                    }
+                    RunEvent(pads);
                 }
             }
         }
+    }
 
-        private static void RunEvent(IEnumerable<Event> events)
+    private static void RunEvent(IEnumerable<Event> events)
+    {
+        foreach (Event item in events)
         {
-            foreach (var item in events)
+            IEnumerable<Animation>? anims = _runner?.Animations.Where(m => m.Name == item.Animation);
+            if (anims.Any())
             {
-                var anims = _runner?.Animations.Where(m => m.Name == item.Animation);
-                if (anims.Any())
+                foreach (Animation anim in anims)
                 {
-                    foreach (var anim in anims)
+                    foreach (Action act in anim.CompiledActions)
                     {
-                        foreach (var act in anim.CompiledActions)
-                        {
-                            act.Invoke();
-                        }
+                        act.Invoke();
                     }
                 }
             }
         }
+    }
 
-        public static Runner Deserialize(string json)
+    public static Runner Deserialize(string json)
+    {
+        JsonSerializerOptions options = new()
         {
-            var options = new JsonSerializerOptions
+            PropertyNameCaseInsensitive = true
+        };
+
+        return JsonSerializer.Deserialize<Runner>(json, options);
+    }
+
+    public static void Run(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested)
+        {
+            foreach (string item in _runner?.Playlist)
+            {
+                if (token.IsCancellationRequested)
+                {
+                    break;
+                }
+
+                // Play the animation
+                Animation? anim = _runner?.Animations?.Where(m => string.Compare(m.Name, item, StringComparison.OrdinalIgnoreCase) == 0).FirstOrDefault();
+                if (anim != null)
+                {
+                    foreach (Action act in anim.CompiledActions)
+                    {
+                        act.Invoke();
+                    }
+                }
+            }
+        }
+    }
+
+    private static bool TryGetObject<T>(dynamic? ser, out T? action) where T : class
+    {
+        action = null;
+        // First, check if we have a json object or just a string
+
+        T? actionRef = (T)Activator.CreateInstance(typeof(T));
+
+        try
+        {
+            JsonSerializerOptions options = new()
             {
                 PropertyNameCaseInsensitive = true
             };
 
-            return JsonSerializer.Deserialize<Runner>(json, options);
+            // And then use the normal json deserializer
+            action = JsonSerializer.Deserialize<T>(ser, options);
+
+        }
+        catch
+        {
+            // Nothing on purpose
         }
 
-        public static void Run(CancellationToken token)
+        if (action != null)
         {
-            while (!token.IsCancellationRequested)
+            MethodInfo? actionRefMethod = (actionRef?.GetType().GetMethods()).FirstOrDefault(m => m.Name == "get_Name");
+            MethodInfo? actionMethod = actionRef.GetType().GetMethods().FirstOrDefault(m => m.Name == "get_Name");
+
+            if (actionRefMethod.Invoke(actionRef, null) == actionMethod.Invoke(action, null))
             {
-                foreach (var item in _runner?.Playlist)
-                {
-                    if (token.IsCancellationRequested)
-                    {
-                        break;
-                    }
-
-                    // Play the animation
-                    var anim = _runner?.Animations?.Where(m => string.Compare(m.Name, item, true) == 0).FirstOrDefault();
-                    if (anim != null)
-                    {
-                        foreach (var act in anim.CompiledActions)
-                        {
-                            act.Invoke();
-                        }
-                    }
-                }
+                return true;
             }
-        }
 
-        private static bool TryGetObject<T>(dynamic? ser, out T? action) where T : class
-        {
             action = null;
-            // First, check if we have a json object or just a string
+        }
 
-            var actionRef = (T)Activator.CreateInstance(typeof(T));
+        // If just a string, then we have a key value list like key1=value1,key2=value2
+        string[] data;
+        try
+        {
+            data = ser.GetString().Trim().Split(',');
+        }
+        catch
+        {
+            data = ((string)ser).Trim().Split(',');
+        }
 
+        Dictionary<string, string> dico = new();
+        foreach (string s in data)
+        {
+            string[] dic = s.Trim().Split('=');
+            dico.Add(dic[0].Trim().ToLower(), dic[1].Trim());
+        }
+
+        if (string.Compare(dico["name"], typeof(T).Name, true) == 0)
+        {
             try
             {
-                var options = new JsonSerializerOptions
+                MethodInfo[] methods = typeof(T).GetMethods();
+                action = (T)Activator.CreateInstance(typeof(T));
+                foreach (MethodInfo method in methods.Where(m => m.Name.StartsWith("set_")))
                 {
-                    PropertyNameCaseInsensitive = true
-                };
+                    string mem = method.Name.ToLower();
 
-                // And then use the normal json deserializer
-                action = JsonSerializer.Deserialize<T>(ser, options);
-
-            }
-            catch
-            {
-                // Nothing on purpose
-            }
-
-            if (action != null)
-            {
-                var actionRefMethod = actionRef.GetType().GetMethods().Where(m => m.Name == "get_Name").FirstOrDefault();
-                var actionMethod = actionRef.GetType().GetMethods().Where(m => m.Name == "get_Name").FirstOrDefault();
-
-                if (actionRefMethod.Invoke(actionRef, null) == actionMethod.Invoke(action, null))
-                {
-                    return true;
-                }
-
-                action = null;
-            }
-
-            // If just a string, then we have a key value list like key1=value1,key2=value2
-            string[] data;
-            try
-            {
-                data = (ser.GetString()).Trim().Split(',');
-            }
-            catch
-            {
-                data = ((string)ser).Trim().Split(',');
-            }
-
-            Dictionary<string, string> dico = new Dictionary<string, string>();
-            foreach (string s in data)
-            {
-                var dic = s.Trim().Split('=');
-                dico.Add(dic[0].Trim().ToLower(), dic[1].Trim());
-            }
-
-            if (string.Compare(dico["name"], typeof(T).Name, true) == 0)
-            {
-                try
-                {
-                    var methods = typeof(T).GetMethods();
-                    action = (T)Activator.CreateInstance(typeof(T));
-                    foreach (var method in methods.Where(m => m.Name.StartsWith("set_")))
+                    if (dico.ContainsKey(mem.Substring(4)))
                     {
-                        var mem = method.Name.ToLower();
-
-                        if (dico.ContainsKey(mem.Substring(4)))
+                        string toParse = dico[mem.Substring(4)];
+                        ParameterInfo[] parameters = method.GetParameters();
+                        object param = null;
+                        if (parameters[0].ParameterType == typeof(string))
                         {
-                            var toParse = dico[mem.Substring(4)];
-                            var parameters = method.GetParameters();
-                            object param = null;
-                            if (parameters[0].ParameterType == typeof(string))
+                            param = toParse;
+                        }
+                        else if (parameters[0].ParameterType == typeof(int?))
+                        {
+                            if (!string.IsNullOrEmpty(toParse))
                             {
-                                param = toParse;
-                            }
-                            else if (parameters[0].ParameterType == typeof(int?))
-                            {
-                                if (!string.IsNullOrEmpty(toParse))
-                                {
-                                    var val = int.Parse(toParse);
-                                    param = val;
-                                }
-                            }
-                            else if (parameters[0].ParameterType == typeof(int))
-                            {
-                                if (!string.IsNullOrEmpty(toParse))
-                                {
-                                    var val = int.Parse(toParse);
-                                    param = val;
-                                }
-                                else
-                                {
-                                    param = (int)0;
-                                }
-                            }
-                            else if (parameters[0].ParameterType == typeof(bool))
-                            {
-                                if (!string.IsNullOrEmpty(toParse))
-                                {
-                                    var val = bool.Parse(toParse);
-                                    param = val;
-                                }
-                            }
-                            else if (parameters[0].ParameterType == typeof(Pad))
-                            {
-                                Enum.TryParse(toParse, out Pad val);
+                                int val = int.Parse(toParse);
                                 param = val;
                             }
-                            else if (parameters[0].ParameterType == typeof(byte))
+                        }
+                        else if (parameters[0].ParameterType == typeof(int))
+                        {
+                            if (!string.IsNullOrEmpty(toParse))
                             {
-                                if (!string.IsNullOrEmpty(toParse))
-                                {
-                                    var val = byte.Parse(toParse);
-                                    param = val;
-                                }
-                                else
-                                {
-                                    param = (byte)0;
-                                }
+                                int val = int.Parse(toParse);
+                                param = val;
                             }
-
-                            method.Invoke(action, new object[] { param });
+                            else
+                            {
+                                param = 0;
+                            }
+                        }
+                        else if (parameters[0].ParameterType == typeof(bool))
+                        {
+                            if (!string.IsNullOrEmpty(toParse))
+                            {
+                                bool val = bool.Parse(toParse);
+                                param = val;
+                            }
+                        }
+                        else if (parameters[0].ParameterType == typeof(Pad))
+                        {
+                            Enum.TryParse(toParse, out Pad val);
+                            param = val;
+                        }
+                        else if (parameters[0].ParameterType == typeof(byte))
+                        {
+                            if (!string.IsNullOrEmpty(toParse))
+                            {
+                                byte val = byte.Parse(toParse);
+                                param = val;
+                            }
+                            else
+                            {
+                                param = (byte)0;
+                            }
                         }
 
+                        method.Invoke(action, [param]);
                     }
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"{ex}");
+
                 }
             }
-
-            return action != null;
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"{ex}");
+            }
         }
 
-        private static Color GetColorFromString(string color)
-        {
-            // Default will be black but that won't thriw
-            Color.TryGetColor(color, out var result);
-            return result;
-        }
+        return action != null;
+    }
+
+    private static Color GetColorFromString(string color)
+    {
+        // Default will be black but that won't thriw
+        Color.TryGetColor(color, out Color result);
+        return result;
     }
 }

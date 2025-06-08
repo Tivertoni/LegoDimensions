@@ -3,22 +3,21 @@
 
 using LegoDimensions.Tag;
 
-namespace LegoDimensions.Portal
+namespace LegoDimensions.Portal;
+
+internal class PadTag
 {
-    internal class PadTag
-    {
-        public int TagIndex { get; set; }
+    public int TagIndex { get; set; }
 
-        public byte[] CardUid { get; set; }
+    public byte[] CardUid { get; set; }
 
-        public Pad Pad { get; set; }
+    public Pad Pad { get; set; }
 
-        public bool Present { get; set; }
+    public bool Present { get; set; }
 
-        public byte LastMessageId { get; set; }
+    public byte LastMessageId { get; set; }
 
-        public ILegoTag? LegoTag { get; set; }
+    public ILegoTag? LegoTag { get; set; }
 
-        public TagType TagType { get; set; }
-    }
+    public TagType TagType { get; set; }
 }

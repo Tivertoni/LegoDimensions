@@ -4,11 +4,10 @@
 using LibUsbDotNet;
 using System.Runtime.InteropServices;
 
-namespace LegoDimensions
+namespace LegoDimensions;
+
+internal static class Imports
 {
-    internal static class Imports
-    {
-        [DllImport("libusb-1.0", EntryPoint = "libusb_set_auto_detach_kernel_driver")]
-        public static extern Error SetAutoDetachKernelDriver(DeviceHandle devHandle, int enable);
-    }
+    [DllImport("libusb-1.0", EntryPoint = "libusb_set_auto_detach_kernel_driver")]
+    public static extern Error SetAutoDetachKernelDriver(DeviceHandle devHandle, int enable);
 }

@@ -2,16 +2,13 @@
 // Laurent Ellerbach and contributors license this file to you under the MIT license.
 
 using LegoDimensions;
-using LegoDimensions.Portal;
 using LegoDimensionsRunner;
-using LegoDimensionsRunner.Actions;
-using System.Text.Json;
 
 Console.WriteLine("Hello, Lego Dimensions Runnuer");
 
 if (args.Length == 0)
 {
-    Console.WriteLine($"You need to specify a file");
+    Console.WriteLine("You need to specify a file");
     return;
 }
 
@@ -21,7 +18,7 @@ if (!File.Exists(args[0]))
     return;
 }
 
-CancellationTokenSource cs = new CancellationTokenSource();
+CancellationTokenSource cs = new();
 
 Console.WriteLine("Press ctrl+c to exit.");
 Console.CancelKeyPress += (sender, eArgs) =>
@@ -30,12 +27,12 @@ Console.CancelKeyPress += (sender, eArgs) =>
     cs.Cancel();
 };
 
-var content = File.ReadAllText(args[0]).Replace("\r", "").Replace("\n","");
+string content = File.ReadAllText(args[0]).Replace("\r", "").Replace("\n","");
 
 ProcessRunner.CreateAllPortals();
 
 // Just to make sure we'll keep things clean
-var portals = ProcessRunner.GetLegoPortals();
+ILegoPortal[]? portals = ProcessRunner.GetLegoPortals();
 LegoPortal[] legoPortals = new LegoPortal[portals.Length];
 for (int i = 0; i < portals.Length; i++)
 {
@@ -43,7 +40,7 @@ for (int i = 0; i < portals.Length; i++)
     legoPortals[i].WakeUp();
 }
 
-var runner = ProcessRunner.Deserialize(content);
+Runner runner = ProcessRunner.Deserialize(content);
 ProcessRunner.Build(runner);
 ProcessRunner.Run(cs.Token);
 

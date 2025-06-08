@@ -3,22 +3,21 @@
 
 using LegoDimensions.Portal;
 
-namespace LegoDimensionsRunner.Actions
+namespace LegoDimensionsRunner.Actions;
+
+public class SetColor : IAction
 {
-    public class SetColor : IAction
+    public int? Duration { get; set; }
+
+    // SetColor(Pad pad, Color color)
+    public new string Name => nameof(SetColor);
+
+    public Pad Pad { get; set; }
+
+    public string Color { get; set; }
+
+    public override string ToString()
     {
-        public int? Duration { get; set; }
-
-        // SetColor(Pad pad, Color color)
-        public new string Name => nameof(SetColor);
-
-        public Pad Pad { get; set; }
-
-        public string Color { get; set; }
-
-        public override string ToString()
-        {
-            return $"Name={Name},Pad={Pad},Color={Color},Duration={Duration}";
-        }
+        return $"Name={Name},Pad={Pad},Color={Color},Duration={Duration}";
     }
 }

@@ -5,9 +5,9 @@ using LegoDimensions;
 using LegoDimensions.Portal;
 using LegoDimensions.Tag;
 
-List<LegoTagEventArgs> tags = new List<LegoTagEventArgs>();
+List<LegoTagEventArgs> tags = [];
 
-var portal = LegoPortal.GetFirstPortal();
+LegoPortal portal = LegoPortal.GetFirstPortal();
 Console.WriteLine($"Portal found, serail number: {BitConverter.ToString(portal.SerialNumber)}");
 // If you don't want to get the tag details on the event, you can disable it
 //portal.GetTagDetails = false;
@@ -37,6 +37,7 @@ while (!Console.KeyAvailable)
 
 portal.Dispose();
 Console.WriteLine("End of test");
+return;
 
 void PortalLegoTagEvent(object? sender, LegoTagEventArgs e)
 {
@@ -48,7 +49,7 @@ void PortalLegoTagEvent(object? sender, LegoTagEventArgs e)
     }
     else
     {
-        var tag = tags.Where(m => m.CardUid.SequenceEqual(e.CardUid)).FirstOrDefault();
+        LegoTagEventArgs? tag = tags.FirstOrDefault(m => m.CardUid.SequenceEqual(e.CardUid));
         if (tag != null)
         {
             tags.Remove(tag);
@@ -57,7 +58,7 @@ void PortalLegoTagEvent(object? sender, LegoTagEventArgs e)
 }
 
 
-void TestColor0xC0()
+void TestColor0XC0()
 {
     Console.WriteLine("Pad left blue");
     portal.SetColor(Pad.Left, Color.Blue);
@@ -72,29 +73,29 @@ void TestColor0xC0()
     portal.SetColor(Pad.All, Color.Yellow);
 }
 
-void TestGetColor0xC1()
+void TestGetColor0XC1()
 {
     Console.WriteLine("All yellow");
     portal.SetColor(Pad.All, Color.Yellow);
     Thread.Sleep(200);
-    var col = portal.GetColor(Pad.Left);
+    Color col = portal.GetColor(Pad.Left);
     Console.WriteLine($"Pad left color: {col.R}-{col.G}-{col.B}");
 }
 
-void TestSetColorAllPads0xC8()
+void TestSetColorAllPads0XC8()
 {
     Console.WriteLine("Pad left Blue, center white, right red");
     portal.SetColorAll(Color.White, Color.Blue, Color.Red);
 }
 
-void TestFlashPad0xCC3()
+void TestFlashPad0XCc3()
 {
     Console.WriteLine("Pad right azure flashing 20 times (10 on and 10 off)");
     portal.Flash(Pad.Right, new FlashPad(20, 20, 20, Color.Azure));
     Thread.Sleep(4000);
 }
 
-void TestFlashAllPads0xCC7()
+void TestFlashAllPads0XCc7()
 {
     Console.WriteLine("Pad center red asymmetric flashing 40 times (20 on and 20 off)");
     Console.WriteLine("Pad left green flashing forever times fast (10 on and 10 off)");
@@ -102,13 +103,13 @@ void TestFlashAllPads0xCC7()
     portal.FlashAll(new FlashPad(10, 30, 40, Color.Red), new FlashPad(1, 1, 255, Color.Green), new FlashPad(20, 20, 20, Color.Azure));
 }
 
-void TestFade0xC2()
+void TestFade0XC2()
 {
     Console.WriteLine("Fade center pad relatively slowly from the displayed color to red, will finish on the new color as odd number of count.");
     portal.Fade(Pad.Center, new FadePad(50, 5, Color.Red));
 }
 
-void TestFadeAll0xC6()
+void TestFadeAll0XC6()
 {
     Console.WriteLine("Fade center pad relatively slowly from the displayed color to red, will finish on the new color as odd number of count.");
     Console.WriteLine("Fade left pad relatively quit fast from the displayed color to green, will finish on the old color as even number of count.");
@@ -116,7 +117,7 @@ void TestFadeAll0xC6()
     portal.FadeAll(new FadePad(50, 5, Color.Red), new FadePad(5, 50, Color.Green), new FadePad(10, 100, Color.Yellow, false));
 }
 
-void TestFadeRandom0xC5()
+void TestFadeRandom0XC5()
 {
     Console.WriteLine("Randome fading on left pad");
     portal.FadeRandom(Pad.Left, 10, 10);
@@ -131,8 +132,8 @@ void TestFadeRandom0xC5()
 
 void TestListTags()
 {
-    var tagList = portal.ListTags();
-    foreach (var tag in tagList)
+    IEnumerable<PresentTag> tagList = portal.ListTags();
+    foreach (PresentTag tag in tagList)
     {
         Console.WriteLine($"Pad: {tag.Pad}, Index: {tag.Index}, UID: {BitConverter.ToString(tag.CardUid)}, Type: {tag.TagType}");
     }
@@ -140,8 +141,8 @@ void TestListTags()
 
 void TestDisplayPresentTag()
 {
-    var tagList = portal.PresentTags;
-    foreach (var tag in tagList)
+    IEnumerable<PresentTag> tagList = portal.PresentTags;
+    foreach (PresentTag tag in tagList)
     {
         Console.WriteLine($"Pad: {tag.Pad}, Index: {tag.Index}, Type: {tag.TagType}");
     }
@@ -155,10 +156,10 @@ void TestReadTag()
         Thread.Sleep(1000);
     }
 
-    var idx = portal.PresentTags.First().Index;
+    byte idx = portal.PresentTags.First().Index;
     for (byte i = 0; i < 0x2c; i += 4)
     {
-        var tag = portal.ReadTag(idx, i);
+        byte[] tag = portal.ReadTag(idx, i);
         if (tag.Length == 0)
         {
             Console.WriteLine($"Error reading card page 0x{i:X2}");
@@ -178,7 +179,7 @@ void TestPasswordAndRead()
         Thread.Sleep(1000);
     }
 
-    var idx = portal.PresentTags.First().Index;
+    byte idx = portal.PresentTags.First().Index;
     portal.SetTagPassword(PortalPassword.Disable, idx);
     Thread.Sleep(100);
     TestReadTag();
@@ -193,7 +194,7 @@ void TestExistingCommùands()
 {
     for (int i = 0; i < 255; i++)
     {
-        Message message = new Message((MessageCommand)i);
+        Message message = new((MessageCommand)i);
         portal.SendMessage(message);
         Thread.Sleep(500);
     }
@@ -201,7 +202,7 @@ void TestExistingCommùands()
 
 void TestGetChallenge()
 {
-    var challenge = portal.GetChallenge();
+    byte[] challenge = portal.GetChallenge();
     Console.WriteLine($"Challenge: {BitConverter.ToString(challenge)}");
     Thread.Sleep(1000);
     challenge = portal.GetChallenge();
@@ -216,8 +217,8 @@ void TestWrite()
         Thread.Sleep(1000);
     }
 
-    var tag = tags.First();
-    var car = LegoTag.EncrypCharactertId(tag.CardUid, 61);
+    LegoTagEventArgs tag = tags.First();
+    byte[] car = LegoTag.EncrypCharactertId(tag.CardUid, 61);
     bool ret = portal.WriteTag(tag.Index, 0x24, car.AsSpan().Slice(0, 4).ToArray());
     if (!ret)
     {
@@ -226,9 +227,8 @@ void TestWrite()
     }
 
     ret = portal.WriteTag(tag.Index, 0x25, car.AsSpan().Slice(4, 4).ToArray());
-    if (!ret)
-    {
-        Console.WriteLine("Write failed writing 0x25");
-        return;
-    }
+
+    if (ret) return;
+
+    Console.WriteLine("Write failed writing 0x25");
 }

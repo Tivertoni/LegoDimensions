@@ -7,22 +7,21 @@
 //      You can make changes to this file and they will not be overwritten when saving.
 //  </auto-generated>
 // -----------------------------------------------------------------------------
-namespace LegoDimensionsReadNfc
+namespace LegoDimensionsReadNfc;
+
+using Terminal.Gui;
+
+
+public partial class DisplayInfo
 {
-    using Terminal.Gui;
-
-
-    public partial class DisplayInfo
+    public DisplayInfo()
     {
-        public DisplayInfo()
-        {
-            InitializeComponent();            
-        }
-
-        public Label Label => lblCurrentAction;
-
-        public Button ButtonClose => btnClose;
-
-        public TextView View => lblView;
+        InitializeComponent();            
     }
+
+    public Label Label => lblCurrentAction;
+
+    public Button ButtonClose => btnClose;
+
+    public TextView View => lblView;
 }

@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace LegoDimensionsRunner.Actions;
 
-namespace LegoDimensionsRunner.Actions
+public interface IAction
 {
-    public interface IAction
-    {
-        string Name { get; }
+    string Name { get; }
 
-        int? Duration { get; set; }
-    }
+    int? Duration { get; set; }
 }
