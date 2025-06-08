@@ -34,7 +34,8 @@ public class FlashPad
     /// <summary>
     /// True if it will flash forever.
     /// </summary>
-    public bool FlashForever => TickCount == 0xFF; //TODO: Maybe merge these two together? get => TickCount == 0xFF; set => TickCount = 0xFF
+    ///
+    public bool FlashForever => TickCount == 0xFF; 
 
     /// <summary>
     /// Sets flashing forever.
