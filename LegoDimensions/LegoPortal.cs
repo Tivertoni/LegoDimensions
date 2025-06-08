@@ -451,7 +451,7 @@ public class LegoPortal : IDisposable, ILegoPortal
                     {
                         // In the case of an event the Message Type event, all is in the payload
                         byte pad = message.Payload[0];
-                        if (pad < 1 || pad > 3)
+                        if (pad is < 1 or > 3)
                         {
                             // Not a valid message
                             continue;
@@ -459,18 +459,18 @@ public class LegoPortal : IDisposable, ILegoPortal
 
                         bool present = message.Payload[3] == 0;
                         TagType tadType = (TagType)message.Payload[1];
-                        byte[] uuid = new byte[7]; //TODO: It's an UID not a UUID!
-                        Array.Copy(message.Payload, 4, uuid, 0, uuid.Length);
+                        byte[] uid = new byte[7];
+                        Array.Copy(message.Payload, 4, uid, 0, uid.Length);
                         // Find the tage if existing in the list
-                        PadTag? legoTag = _padTag.FirstOrDefault(m => m.CardUid.SequenceEqual(uuid));
+                        PadTag? legoTag = _padTag.FirstOrDefault(m => m.CardUid.SequenceEqual(uid));
                         byte padIndex = message.Payload[2];
                         if (present)
                         {
 
                             if (legoTag == null)
                             {
-                                _presentTags.Add(new PresentTag((Pad)pad, tadType, padIndex, uuid));
-                                legoTag = new PadTag { Pad = (Pad)pad, TagIndex = padIndex, Present = present, CardUid = uuid, TagType = tadType };
+                                _presentTags.Add(new PresentTag((Pad)pad, tadType, padIndex, uid));
+                                legoTag = new PadTag { Pad = (Pad)pad, TagIndex = padIndex, Present = present, CardUid = uid, TagType = tadType };
                                 _padTag.Add(legoTag);
 
                                 if (GetTagDetails)
